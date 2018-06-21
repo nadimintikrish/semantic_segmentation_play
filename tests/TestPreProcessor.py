@@ -1,5 +1,4 @@
 from data_preprocessor.PreProcessImgData import PreProcessImgData
-from keras.preprocessing import image
 import numpy as np
 
 '''
@@ -23,5 +22,26 @@ p = PreProcessImgData(image_path_samples,
                       6, 128, 128, labels_dict)
 
 labels = p.file_list_labels[:10]
+'''
+test label to array
+'''
 
-print(p.label_to_array(np.array(p.load(labels[1]))).shape)
+print("Checked Categorized label shape {}"
+    .format(
+    p.label_to_array(np.array(p.load(labels[1]))).shape
+))
+
+samples = p.file_list_samples[:10]
+
+print(labels)
+print(samples)
+
+'''
+test generator
+'''
+gen = p.train_generator(samples, labels, 2)
+
+next(gen)
+next(gen)
+next(gen)
+next(gen)

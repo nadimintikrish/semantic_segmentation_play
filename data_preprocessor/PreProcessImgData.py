@@ -17,10 +17,6 @@ class PreProcessImgData:
         self.width = width
         self.void_class = 0
 
-    def reduce_for_categorical(self, label):
-        print(label.shape)
-        return np.zeros(label.shape[0] * label.shape[1]).reshape(label.shape[0], label.shape[1], 1)
-
     '''
     converts a label of form (w*h*3) to (w*h*num_classes)
     '''
@@ -30,7 +26,7 @@ class PreProcessImgData:
         for i in range(self.width):
             for j in range(self.height):
                 list_val = label_array[i][j].tolist()
-                print("Checking {}".format(list_val))
+
                 if list_val in self.labels_dict:
                     cat_zero_array[i][j] = \
                         self.labels_dict.index(list_val)
@@ -42,21 +38,24 @@ class PreProcessImgData:
     def load(self, path):
         return image.load_img(path, target_size=(self.width, self.height))
 
-    def train_generator(self, file_list_samples, file_list_labels, batch_size):
+    def train_generator(self, samples, labels, batch_size):
         batch_samples = np.zeros((batch_size, self.height, self.width, 3))
         batch_labels = np.zeros((batch_size, self.height, self.width, self.num_classes))
 
         while True:
             for i in range(batch_size):
-                index = randrange(len(file_list_samples))
-                batch_samples[i] = np.array(self.load(file_list_samples[index]))
-                batch_labels[i] = self.label_to_array(np.array(self.load(file_list_labels[index])))
+                index = randrange(len(samples))
+                batch_samples[i] = np.array(self.load(samples[index]))
+                batch_labels[i] = self.label_to_array(np.array(self.load(labels[index])))
             print('Train_Batch_Samples_Size is {} and Labels size is {}'
                   .format(batch_samples.shape, batch_labels.shape))
             yield batch_samples, batch_labels
 
     @staticmethod
-    def normalize_tensors(train_samples_array, test_samples_array):
+    def reduce_for_categorical(label):
+        return np.zeros(label.shape[0] * label.shape[1]).reshape(label.shape[0], label.shape[1], 1)
 
-        return train_samples_array.astype('float32') / 255, \
-               test_samples_array.astype('float32') / 255
+    @staticmethod
+    def normalize_tensors(tensors):
+
+        return tensors.astype('float32') / 255
