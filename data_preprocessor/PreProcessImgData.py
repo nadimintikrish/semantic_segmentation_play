@@ -47,9 +47,7 @@ class PreProcessImgData:
                 index = randrange(len(samples))
                 batch_samples[i] = np.array(self.load(samples[index]))
                 batch_labels[i] = self.label_to_array(np.array(self.load(labels[index])))
-            print('Train_Batch_Samples_Size is {} and Labels size is {}'
-                  .format(batch_samples.shape, batch_labels.shape))
-            yield batch_samples, batch_labels
+            yield self.normalize_tensors(batch_samples), batch_labels
 
     @staticmethod
     def reduce_for_categorical(label):
