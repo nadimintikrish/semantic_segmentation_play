@@ -41,7 +41,13 @@ test generator
 '''
 gen = p.train_generator(samples, labels, 2)
 
-next(gen)
-next(gen)
-next(gen)
-next(gen)
+cat_img, cat_labels = next(gen)
+
+print(cat_labels.shape)
+
+img = p.reduce_to_img(cat_labels[1])
+
+from PIL import Image
+
+Image.fromarray(img.astype('uint8')).show()
+Image

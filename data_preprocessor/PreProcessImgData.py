@@ -49,6 +49,15 @@ class PreProcessImgData:
                 batch_labels[i] = self.label_to_array(np.array(self.load(labels[index])))
             yield self.normalize_tensors(batch_samples), batch_labels
 
+    def reduce_to_img(self, cat_imag):
+        final_img = np.zeros((self.width, self.height, 3))
+
+        for i in range(self.width):
+            for j in range(self.height):
+                final_img[i][j] = self.labels_dict[np.argmax(cat_imag[i][j])]
+
+        return final_img
+
     @staticmethod
     def reduce_for_categorical(label):
         return np.zeros(label.shape[0] * label.shape[1]).reshape(label.shape[0], label.shape[1], 1)
