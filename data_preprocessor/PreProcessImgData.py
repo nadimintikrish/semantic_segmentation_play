@@ -38,7 +38,7 @@ class PreProcessImgData:
     def load(self, path):
         return image.load_img(path, target_size=(self.width, self.height))
 
-    def train_generator(self, samples, labels, batch_size):
+    def train_generator(self, samples, labels, batch_size, test=False):
         batch_samples = np.zeros((batch_size, self.height, self.width, 3))
         batch_labels = np.zeros((batch_size, self.height, self.width, self.num_classes))
 
@@ -47,7 +47,7 @@ class PreProcessImgData:
                 index = randrange(len(samples))
                 batch_samples[i] = np.array(self.load(samples[index]))
                 batch_labels[i] = self.label_to_array(np.array(self.load(labels[index])))
-            yield self.normalize_tensors(batch_samples), batch_labels
+            yield self.normalize_tensors(batch_samples, test), batch_labels
 
     def reduce_to_img(self, cat_imag):
         final_img = np.zeros((self.width, self.height, 3))
@@ -61,8 +61,9 @@ class PreProcessImgData:
     @staticmethod
     def reduce_for_categorical(label):
         return np.zeros(label.shape[0] * label.shape[1]).reshape(label.shape[0], label.shape[1], 1)
-
+    
     @staticmethod
-    def normalize_tensors(tensors):
-
-        return tensors.astype('float32') / 255
+    def normalize_tensors(tensors, test):
+        if test:
+            tensors.astype('float32') / 255
+        return tensors.astype('float32')
