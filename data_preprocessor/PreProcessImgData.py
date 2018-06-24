@@ -64,6 +64,6 @@ class PreProcessImgData:
     
     @staticmethod
     def normalize_tensors(tensors, test):
-        if test:
-            tensors.astype('float32') / 255
+        if not test:
+            return tensors.astype('float32') / 255
         return tensors.astype('float32')
