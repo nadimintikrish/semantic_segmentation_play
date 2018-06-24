@@ -26,13 +26,11 @@ class PreProcessImgData:
         for i in range(self.width):
             for j in range(self.height):
                 list_val = label_array[i][j].tolist()
-
                 if list_val in self.labels_dict:
                     cat_zero_array[i][j] = \
                         self.labels_dict.index(list_val)
                 else:
                     cat_zero_array[i][j] = self.void_class
-
         return to_categorical(cat_zero_array, self.num_classes)
 
     def load(self, path):
@@ -61,7 +59,7 @@ class PreProcessImgData:
     @staticmethod
     def reduce_for_categorical(label):
         return np.zeros(label.shape[0] * label.shape[1]).reshape(label.shape[0], label.shape[1], 1)
-    
+
     @staticmethod
     def normalize_tensors(tensors, test):
         if not test:

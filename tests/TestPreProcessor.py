@@ -1,5 +1,6 @@
 from data_preprocessor.PreProcessImgData import PreProcessImgData
 import numpy as np
+from PIL import Image
 
 '''
 Void		0 	0 	0
@@ -15,11 +16,11 @@ XXhorse		128 0 128
 image_path_samples = 'C:/Krishna/DataSets/cam_vid_semantic/train_samples/*.png'
 image_path_labels = 'C:/Krishna/DataSets/cam_vid_semantic/train_labels/*.png'
 
-labels_dict = [[0, 0, 0], [128, 0, 0], [0, 128, 0], [128, 128, 0], [0, 0, 128], [128, 0, 128]]
+labels_dict = [[0, 0, 0], [128, 0, 0], [128, 64, 128]]
 
 p = PreProcessImgData(image_path_samples,
                       image_path_labels,
-                      6, 128, 128, labels_dict)
+                      3, 256, 256, labels_dict)
 
 labels = p.file_list_labels[:100]
 samples = p.file_list_samples[:100]
@@ -32,8 +33,10 @@ from sklearn.model_selection import train_test_split
 train_samples, test_samples, train_labels, test_labels = \
     train_test_split(p.file_list_samples, p.file_list_labels, test_size=0.33, random_state=42)
 
-for i in range(20):
-    print(labels[i] + "\t" + samples[i])
+test_lbl = p.label_to_array(np.array(p.load(train_labels[245])))
+
+Image.fromarray(p.reduce_to_img(test_lbl).astype('uint8')).show()
+
 '''
 test label to array
 '''
