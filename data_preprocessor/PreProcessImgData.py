@@ -46,7 +46,7 @@ class PreProcessImgData:
                 index = randrange(len(samples))
                 batch_samples[i] = np.array(self.load(samples[index]))
                 batch_labels[i] = self.label_to_array(np.array(self.load(labels[index])))
-            yield self.normalize_tensors(batch_samples, test), batch_labels
+            yield self.normalize_tensors(batch_samples, test), batch_labels.reshape((batch_size,self.width*self.height,self.num_classes))
 
     def reduce_to_img(self, cat_imag):
         final_img = np.zeros((self.width, self.height, 3))
@@ -64,7 +64,6 @@ class PreProcessImgData:
     @staticmethod
     def normalize_tensors(tensors, test):
         if not test:
-            print("test")
             return tensors.astype('float32') / 255
         return tensors.astype('float32')
 
