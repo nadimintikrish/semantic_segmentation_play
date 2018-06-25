@@ -4,6 +4,7 @@ from random import randrange
 import numpy as np
 from keras.utils import to_categorical
 from keras.preprocessing import image
+import keras.backend as K
 
 
 class PreProcessImgData:
@@ -63,5 +64,13 @@ class PreProcessImgData:
     @staticmethod
     def normalize_tensors(tensors, test):
         if not test:
+            print("test")
             return tensors.astype('float32') / 255
         return tensors.astype('float32')
+
+    @staticmethod
+    def depth_softmax(matrix):
+        sigmoid = lambda x: 1 / (1 + K.exp(-x))
+        sigmoided_matrix = sigmoid(matrix)
+        softmax_matrix = sigmoided_matrix / K.sum(sigmoided_matrix, axis=0)
+        return softmax_matrix

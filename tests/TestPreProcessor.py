@@ -28,14 +28,14 @@ samples = p.file_list_samples[:100]
 labels = sorted(labels)
 samples = sorted(samples)
 
-from sklearn.model_selection import train_test_split
-
-train_samples, test_samples, train_labels, test_labels = \
-    train_test_split(p.file_list_samples, p.file_list_labels, test_size=0.33, random_state=42)
-
-test_lbl = p.label_to_array(np.array(p.load(train_labels[245])))
-
-Image.fromarray(p.reduce_to_img(test_lbl).astype('uint8')).show()
+# from sklearn.model_selection import train_test_split
+#
+# train_samples, test_samples, train_labels, test_labels = \
+#     train_test_split(p.file_list_samples, p.file_list_labels, test_size=0.33, random_state=42)
+#
+# test_lbl = p.label_to_array(np.array(p.load(train_labels[245])))
+#
+# Image.fromarray(p.reduce_to_img(test_lbl).astype('uint8')).show()
 
 '''
 test label to array
@@ -54,12 +54,12 @@ test label to array
 '''
 test generator
 '''
-# gen = p.train_generator(samples, labels, 2)
-#
-# cat_img, cat_labels = next(gen)
-#
-# print(cat_labels.shape)
-#
+gen = p.train_generator(samples, labels, 2, test=False)
+
+cat_img, cat_labels = next(gen)
+
+print(cat_img[0])
+
 # img = p.reduce_to_img(cat_labels[1])
 #
 # from PIL import Image
