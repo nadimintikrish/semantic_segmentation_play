@@ -16,11 +16,11 @@ XXhorse		128 0 128
 image_path_samples = 'C:/Krishna/DataSets/cam_vid_semantic/train_samples/*.png'
 image_path_labels = 'C:/Krishna/DataSets/cam_vid_semantic/train_labels/*.png'
 
-labels_dict = [[0, 0, 0], [128, 0, 0], [128, 64, 128]]
+labels_dict = [[0, 0, 0], [128, 64, 128]]
 
 p = PreProcessImgData(image_path_samples,
                       image_path_labels,
-                      3, 256, 256, labels_dict)
+                      1, 256, 256, labels_dict, True)
 
 labels = p.file_list_labels[:100]
 samples = p.file_list_samples[:100]
@@ -58,10 +58,9 @@ gen = p.train_generator(samples, labels, 2, test=False)
 
 cat_img, cat_labels = next(gen)
 
-print(cat_img[0])
+#
+img = p.reduce_to_img(cat_labels[1])
 
-# img = p.reduce_to_img(cat_labels[1])
-#
-# from PIL import Image
-#
-# Image.fromarray(img.astype('uint8')).show()
+from PIL import Image
+
+Image.fromarray(img.astype('uint8')).show()

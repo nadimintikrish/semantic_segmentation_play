@@ -9,7 +9,8 @@ import keras.backend as K
 
 class PreProcessImgData:
 
-    def __init__(self, img_path_samples, img_path_labels, num_classes, height, width, labels_dict):
+    def __init__(self, img_path_samples, img_path_labels, num_classes,
+                 height, width, labels_dict, binary):
         self.file_list_samples = glob.glob(img_path_samples)
         self.file_list_labels = glob.glob(img_path_labels)
         self.num_classes = num_classes
@@ -17,6 +18,7 @@ class PreProcessImgData:
         self.height = height
         self.width = width
         self.void_class = 0
+        self.binary = binary
 
     '''
     converts a label of form (w*h*3) to (w*h*num_classes)
@@ -32,7 +34,8 @@ class PreProcessImgData:
                         self.labels_dict.index(list_val)
                 else:
                     cat_zero_array[i][j] = self.void_class
-        return to_categorical(cat_zero_array, self.num_classes)
+        return cat_zero_array if self.binary \
+            else to_categorical(cat_zero_array, self.num_classes)
 
     def load(self, path):
         return image.load_img(path, target_size=(self.width, self.height))
@@ -46,15 +49,19 @@ class PreProcessImgData:
                 index = randrange(len(samples))
                 batch_samples[i] = np.array(self.load(samples[index]))
                 batch_labels[i] = self.label_to_array(np.array(self.load(labels[index])))
-            yield self.normalize_tensors(batch_samples, test), batch_labels.reshape((batch_size,self.width*self.height,self.num_classes))
+            yield self.normalize_tensors(batch_samples, test), batch_labels.reshape(
+                (batch_size, self.width * self.height, self.num_classes)) \
+                if not self.binary else batch_labels
 
     def reduce_to_img(self, cat_imag):
         final_img = np.zeros((self.width, self.height, 3))
 
         for i in range(self.width):
             for j in range(self.height):
-                final_img[i][j] = self.labels_dict[np.argmax(cat_imag[i][j])]
-
+                if self.binary:
+                    final_img[i][j] = self.labels_dict[int(cat_imag[i][j][0])]
+                else:
+                    final_img[i][j] = self.labels_dict[np.argmax(cat_imag[i][j])]
         return final_img
 
     @staticmethod
