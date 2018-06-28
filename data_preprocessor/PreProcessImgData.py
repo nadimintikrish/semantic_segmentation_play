@@ -59,7 +59,8 @@ class PreProcessImgData:
         for i in range(self.width):
             for j in range(self.height):
                 if self.binary:
-                    final_img[i][j] = self.labels_dict[int(cat_imag[i][j][0])]
+                    val = 1 if cat_imag[i][j][0] > 0.5 else 0
+                    final_img[i][j] = self.labels_dict[int(val)]
                 else:
                     final_img[i][j] = self.labels_dict[np.argmax(cat_imag[i][j])]
         return final_img
