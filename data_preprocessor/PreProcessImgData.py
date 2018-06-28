@@ -69,10 +69,15 @@ class PreProcessImgData:
     def reduce_for_categorical(label):
         return np.zeros(label.shape[0] * label.shape[1]).reshape(label.shape[0], label.shape[1], 1)
 
+    '''
+    changing the normalizing divisor from
+    255 to 192 (192 is max pixel)
+    '''
+
     @staticmethod
     def normalize_tensors(tensors, test):
         if not test:
-            return tensors.astype('float32') / 255
+            return tensors.astype('float32') / 192
         return tensors.astype('float32')
 
     @staticmethod
